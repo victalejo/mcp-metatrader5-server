@@ -1,0 +1,13 @@
+[project]
+name = "mcp-metatrader5-server"
+version = "0.1.0"
+description = "A Model Context Protocol (MCP) server for MetaTrader 5"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=0.4.1",
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.6.0",
+    "metatrader5>=5.0.4874",
+    "pandas>=2.2.3",
+]
