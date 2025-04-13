@@ -1,75 +1,94 @@
 # MetaTrader 5 MCP Server
 
-A Model Context Protocol (MCP) server for interacting with the MetaTrader 5 trading platform. This server provides AI assistants with tools and resources to access market data, perform trading operations, and analyze trading history.
+A Model Context Protocol (MCP) server for MetaTrader 5, allowing AI assistants to interact with the MetaTrader 5 platform for trading and market data analysis.
 
 ## Features
 
-- **Market Data Access**: Fetch historical price data, ticks, and symbol information
-- **Trading Operations**: Place orders, manage positions, and track trading history
-- **Account Management**: Access account information and terminal status
-- **AI-Friendly Prompts**: Pre-defined conversation templates for common trading tasks
-- **Comprehensive Documentation**: Detailed guides for using the MetaTrader 5 API
-
-## Prerequisites
-
-- Python 3.8 or higher
-- MetaTrader 5 terminal installed
-- MetaTrader 5 account (demo or real)
+- Connect to MetaTrader 5 terminal
+- Access market data (symbols, rates, ticks)
+- Place and manage trades
+- Analyze trading history
+- Integrate with AI assistants through the Model Context Protocol
 
 ## Installation
 
-1. Install the required dependencies:
+### From PyPI
 
 ```bash
-pip install -r requirements.txt
+pip install mcp-metatrader5-server
 ```
 
-2. Make sure the MetaTrader 5 terminal is installed and running.
+### From Source
+
+```bash
+git clone https://github.com/yourusername/mcp-metatrader5-server.git
+cd mcp-metatrader5-server
+pip install -e .
+```
+
+## Requirements
+
+- Python 3.11 or higher
+- MetaTrader 5 terminal installed
+- MetaTrader 5 account (demo or real)
 
 ## Usage
 
-### Running the Server in Development Mode
+### Running the Server
 
-To run the server in development mode with hot reloading:
-
-```bash
-fastmcp dev main.py
-```
-
-This will start the MCP server and provide an inspector interface for testing the tools and resources.
-
-### Installing the Server for Claude Desktop
-
-To install the server for use with Claude Desktop:
+To run the server in development mode:
 
 ```bash
-fastmcp install main.py
+mt5-mcp dev
 ```
 
-### Using the Server with AI Assistants
+This will start the server at http://127.0.0.1:8000 by default.
 
-Once the server is running, AI assistants can use the following tools and resources:
+You can specify a different host and port:
 
-#### Connection Management
+```bash
+mt5-mcp dev --host 0.0.0.0 --port 8080
+```
 
-- `initialize()`: Initialize the MetaTrader 5 terminal
+### Installing for Claude Desktop
+
+To install the server for Claude Desktop:
+
+```bash
+mt5-mcp install
+```
+
+## API Reference
+
+### Connection Management
+
+- `initialize()`: Initialize the MT5 terminal
 - `login(account, password, server)`: Log in to a trading account
-- `shutdown()`: Shut down the connection to the terminal
+- `shutdown()`: Close the connection to the MT5 terminal
 
-#### Market Data Access
+### Market Data Functions
 
 - `get_symbols()`: Get all available symbols
+- `get_symbols_by_group(group)`: Get symbols by group
 - `get_symbol_info(symbol)`: Get information about a specific symbol
-- `copy_rates_from_pos(symbol, timeframe, start_pos, count)`: Get historical price data
-- `copy_ticks_from_pos(symbol, start_pos, count, flags)`: Get historical tick data
+- `get_symbol_info_tick(symbol)`: Get the latest tick for a symbol
+- `copy_rates_from_pos(symbol, timeframe, start_pos, count)`: Get bars from a specific position
+- `copy_rates_from_date(symbol, timeframe, date_from, count)`: Get bars from a specific date
+- `copy_rates_range(symbol, timeframe, date_from, date_to)`: Get bars within a date range
+- `copy_ticks_from_pos(symbol, start_pos, count)`: Get ticks from a specific position
+- `copy_ticks_from_date(symbol, date_from, count)`: Get ticks from a specific date
+- `copy_ticks_range(symbol, date_from, date_to)`: Get ticks within a date range
 
-#### Trading Operations
+### Trading Functions
 
-- `order_send(request)`: Send a trading order
+- `order_send(request)`: Send an order to the trade server
+- `order_check(request)`: Check if an order can be placed with the specified parameters
 - `positions_get(symbol, group)`: Get open positions
+- `positions_get_by_ticket(ticket)`: Get an open position by its ticket
 - `orders_get(symbol, group)`: Get active orders
-- `history_orders_get(...)`: Get historical orders
-- `history_deals_get(...)`: Get historical deals
+- `orders_get_by_ticket(ticket)`: Get an active order by its ticket
+- `history_orders_get(symbol, group, ticket, position, from_date, to_date)`: Get orders from history
+- `history_deals_get(symbol, group, ticket, position, from_date, to_date)`: Get deals from history
 
 ## Example Workflows
 
@@ -105,7 +124,7 @@ request = OrderRequest(
     symbol="EURUSD",
     volume=0.1,
     type=mt5.ORDER_TYPE_BUY,
-    price=1.1,
+    price=mt5.symbol_info_tick("EURUSD").ask,
     deviation=20,
     magic=123456,
     comment="Buy order",
@@ -127,8 +146,6 @@ The server provides the following resources to help AI assistants understand how
 - `mt5://getting_started`: Basic workflow for using the MetaTrader 5 API
 - `mt5://trading_guide`: Guide for placing and managing trades
 - `mt5://market_data_guide`: Guide for accessing and analyzing market data
-- `mt5://timeframes`: Information about available timeframes
-- `mt5://tick_flags`: Information about tick flags
 - `mt5://order_types`: Information about order types
 - `mt5://order_filling_types`: Information about order filling types
 - `mt5://order_time_types`: Information about order time types
@@ -144,9 +161,58 @@ The server provides the following prompts to help AI assistants interact with us
 - `manage_positions()`: Manage open positions
 - `analyze_trading_history(days)`: Analyze trading history
 
+## Development
+
+### Project Structure
+
+```
+mcp-metatrader5-server/
+├── src/
+│   └── mcp_metatrader5_server/
+│       ├── __init__.py
+│       ├── server.py
+│       ├── market_data.py
+│       ├── trading.py
+│       ├── main.py
+│       └── cli.py
+├── run.py
+├── README.md
+└── pyproject.toml
+```
+
+### Building the Package
+
+To build the package:
+
+```bash
+python -m pip install build
+python -m build
+```
+
+Or using uv:
+
+```bash
+uv build
+```
+
+### Publishing to PyPI
+
+To publish the package to PyPI:
+
+```bash
+python -m pip install twine
+python -m twine upload dist/*
+```
+
+Or using uv:
+
+```bash
+uv publish
+```
+
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
 
 ## Acknowledgements
 
