@@ -12,22 +12,17 @@ A Model Context Protocol (MCP) server for MetaTrader 5, allowing AI assistants t
 
 ## Installation
 
-### From PyPI
-
-```bash
-pip install mcp-metatrader5-server
-```
-
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/mcp-metatrader5-server.git
+git clone https://github.com/Qoyyuum/mcp-metatrader5-server.git
 cd mcp-metatrader5-server
 pip install -e .
 ```
 
 ## Requirements
 
+- uv
 - Python 3.11 or higher
 - MetaTrader 5 terminal installed
 - MetaTrader 5 account (demo or real)
@@ -39,7 +34,7 @@ pip install -e .
 To run the server in development mode:
 
 ```bash
-mt5-mcp dev
+uv run mt5mcp dev
 ```
 
 This will start the server at http://127.0.0.1:8000 by default.
@@ -47,7 +42,7 @@ This will start the server at http://127.0.0.1:8000 by default.
 You can specify a different host and port:
 
 ```bash
-mt5-mcp dev --host 0.0.0.0 --port 8080
+uv run mt5mcp dev --host 0.0.0.0 --port 8080
 ```
 
 ### Installing for Claude Desktop
@@ -55,7 +50,37 @@ mt5-mcp dev --host 0.0.0.0 --port 8080
 To install the server for Claude Desktop:
 
 ```bash
-mt5-mcp install
+git clone https://github.com/Qoyyuum/mcp-metatrader5-server
+cd mcp-metatrader5-server
+uv run fastmcp install src\mcp_metatrader5_server\server.py
+```
+
+Check your `claude_desktop_config.json` file. It should look something like this:
+
+```json
+{
+  "mcpServers": {
+    "MetaTrader 5 MCP Server": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "MetaTrader5",
+        "--with",
+        "fastmcp",
+        "--with",
+        "numpy",
+        "--with",
+        "pandas",
+        "--with",
+        "pydantic",
+        "fastmcp",
+        "run",
+        "C:\\FULL_PATH_TO\\src\\mcp_metatrader5_server\\server.py"
+      ]
+    }
+  }
+}
 ```
 
 ## API Reference

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcp-metatrader5-server"
-version = "0.1.2"
+version = "0.1.4"
 description = "A Model Context Protocol (MCP) server for MetaTrader 5"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -34,7 +34,7 @@ dependencies = [
 "Bug Tracker" = "https://github.com/Qoyyuum/mcp-metatrader5-server/issues"
 
 [project.scripts]
-mt5-mcp = "mcp_metatrader5_server.cli:main"
+mt5mcp = "mcp_metatrader5_server.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
