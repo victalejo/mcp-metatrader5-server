@@ -75,12 +75,10 @@ def main():
     elif args.command == "install":
         # Install for Claude Desktop
         try:
-            from mcp.cli import install_mcp
-            logger.info("Installing MCP server for Claude Desktop")
-            install_mcp("mcp_metatrader5_server.main:mcp")
-            return 0
+            cmd = [sys.executable, "--with", "mcp-metatrader5-server", "fastmcp", "install", "src\mcp_metatrader5_server\server.py"]
+            return subprocess.call(cmd)
         except ImportError:
-            logger.error("Could not import mcp.cli. Please install the mcp package with pip install mcp[cli]")
+            logger.error("Failed to install MCP server for Claude Desktop")
             return 1
     else:
         parser.print_help()
