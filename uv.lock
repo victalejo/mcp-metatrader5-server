@@ -170,14 +170,16 @@ cli = [
 
 [[package]]
 name = "mcp-metatrader5-server"
-version = "0.1.0"
-source = { virtual = "." }
+version = "0.1.2"
+source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
     { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
     { name = "metatrader5" },
+    { name = "numpy" },
     { name = "pandas" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -186,7 +188,9 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
     { name = "metatrader5", specifier = ">=5.0.4874" },
+    { name = "numpy", specifier = ">=1.24.0" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pydantic", specifier = ">=2.0.0" },
 ]
 
 [[package]]
