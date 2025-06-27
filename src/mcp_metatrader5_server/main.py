@@ -13,6 +13,8 @@ from fastmcp.prompts.base import UserMessage, AssistantMessage
 from mcp_metatrader5_server.server import mcp
 import mcp_metatrader5_server.market_data
 import mcp_metatrader5_server.trading
+import mcp_metatrader5_server.technical_analysis
+import mcp_metatrader5_server.economic_calendar
 
 # Configure logging
 logging.basicConfig(
@@ -109,6 +111,68 @@ def analyze_trading_history(days: int) -> list:
             f"Let me fetch your historical orders and deals."
         ),
         UserMessage("Please show me my performance statistics and any patterns in my trading."),
+    ]
+
+@mcp.prompt()
+def analyze_technical_setup(symbol: str, timeframe: int, analysis_type: str = "comprehensive") -> list:
+    """
+    Prompt for comprehensive technical analysis of a trading instrument.
+    
+    Args:
+        symbol: Symbol name (e.g., "EURUSD", "BTCUSD", etc.)
+        timeframe: Timeframe for analysis
+        analysis_type: Type of analysis (indicators, patterns, signals, comprehensive)
+    """
+    return [
+        UserMessage(f"I need a detailed technical analysis for {symbol} on the {timeframe} timeframe."),
+        AssistantMessage(
+            f"I'll perform a comprehensive technical analysis for {symbol}. "
+            f"Let me gather the market data and calculate all relevant indicators, "
+            f"detect candlestick patterns, analyze trends, and generate trading signals."
+        ),
+        UserMessage("Please include RSI, MACD, moving averages, support/resistance levels, and any significant patterns."),
+        AssistantMessage(
+            "Perfect! I'll provide a complete analysis including:\n"
+            "- 25+ Technical indicators (RSI, MACD, Bollinger Bands, etc.)\n"
+            "- Candlestick pattern detection\n" 
+            "- Trend analysis with support/resistance levels\n"
+            "- Trading signals with entry/exit recommendations\n"
+            "- Risk management suggestions"
+        ),
+    ]
+
+@mcp.prompt()
+def analyze_economic_calendar(
+    date_from: str,
+    date_to: str,
+    focus_currency: str = "USD",
+    include_impact_analysis: bool = True
+) -> list:
+    """
+    Prompt for comprehensive economic calendar analysis.
+    
+    Args:
+        date_from: Start date for analysis
+        date_to: End date for analysis  
+        focus_currency: Currency to focus analysis on
+        include_impact_analysis: Whether to include market impact analysis
+    """
+    return [
+        UserMessage(f"I need a comprehensive economic calendar analysis from {date_from} to {date_to}, focusing on {focus_currency}."),
+        AssistantMessage(
+            f"I'll provide a complete economic calendar analysis for {focus_currency} from {date_from} to {date_to}. "
+            f"This will include high-impact events, market impact analysis, trading recommendations, and volatility forecasts."
+        ),
+        UserMessage("Please include surprise factor analysis and correlations with major currency pairs."),
+        AssistantMessage(
+            "Perfect! I'll deliver:\n"
+            "📅 Complete event calendar with importance levels\n"
+            "📊 Market impact analysis for each major event\n"
+            "⚡ Surprise factor calculations (actual vs forecast)\n"
+            "💱 Currency pair correlation analysis\n"
+            "🎯 Specific trading recommendations\n"
+            "📈 Volatility forecasts and risk management tips"
+        ),
     ]
 
 # Add context to help AI assistants understand how to use the MetaTrader 5 API
